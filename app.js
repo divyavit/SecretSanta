@@ -99,36 +99,40 @@ app.post('/input',urlencodedParser,jsonParser, function (req, res, next) {
         let name = next_players[people_count];
         dict[req.body.giftNo] = dict[req.body.giftNo]|| [];
         let g = gift_dict[name].indexOf(parseInt(req.body.giftNo));
-        console.log(gift_dict);
+        //console.log(gift_dict);
         if (g > -1) {
             gift_dict[name].splice(g, 1);
         }
-        console.log(gift_dict);
-        console.log("after remove for player "+ name + "is " + gift_dict[name]);
+        //console.log(gift_dict);
+        //console.log("after remove for player "+ name + "is " + gift_dict[name]);
         dict[req.body.giftNo].push(name);
         people_count++;
         let new_name = next_players[people_count];
-        console.log("gift dict for player " + new_name + " is "+ gift_dict[new_name]);
+        //console.log("gift dict for player " + new_name + " is "+ gift_dict[new_name]);
         res.render('start',{count:round_count,name:new_name,available_gifts:gift_dict[new_name]});
     }
     else {
         let name = next_players[people_count];
         let g = gift_dict[name].indexOf(parseInt(req.body.giftNo));
-        console.log(gift_dict);
+        //console.log(gift_dict);
         if (g > -1) {
             gift_dict[name].splice(g, 1);
         }
-        console.log(gift_dict);
-        console.log("after remove for player "+ name + "is " + gift_dict[name]);
+        //console.log(gift_dict);
+        //console.log("after remove for player "+ name + "is " + gift_dict[name]);
         dict[req.body.giftNo] = dict[req.body.giftNo]|| [];
         dict[req.body.giftNo].push(name);
         people_count = 0;
         let new_players = [];
         for(let i=1;i<=original_list.length;i++) {
             let res = dict[i.toString()] || [];
+            console.log("res is"+ res);
             if(res.length > 1) {
-                new_players.push(res[0]);
+                let some = res.slice(0,res.length-1);
+                console.log("some is ",some);
+                new_players = new_players.concat(some);
             }
+            console.log(new_players);
         }
         let new_list = [];
         for(let i=1;i<=original_list.length;i++) {
@@ -138,13 +142,13 @@ app.post('/input',urlencodedParser,jsonParser, function (req, res, next) {
         for(let i=1;i<=original_list.length;i++) {
             let res = dict[i.toString()] || [];
             if(res.length > 1) {
-                res.splice(0,1);
+                res.splice(0,res.length-1);
                 dict[i.toString()] = res;
             }
         }
         next_players = new_players;
         round_count++;
-        res.render('result',{count:round_count,available_gifts:gift_dict[name],list:new_list,length:original_list.length}); 
+        res.render('result',{count:round_count,available_gifts:gift_dict[name],list:new_list,original_list}); 
     }
      
 });

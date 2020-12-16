@@ -11,29 +11,46 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
-	<title>Round <%= count-1 %> Results</title>
+  <title>Round <%= count-1 %> Results</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<meta name="viewport" content="initial-scale=1.0; maximum-scale=1.0; width=device-width;">
 </head>
 
 <body>
+  <script>
+    $('body').click(function (event) 
+   {
+   if(!$(event.target).closest('#myImg').length && !$(event.target).is('#myImg')) {
+       $(".modal").hide();
+       var element = document.getElementById("form");
+       element.classList.remove("blur");
+   }     
+   });
+   </script> 
     <div class="table-title">
         <h3>Round <%= count-1 %> Results</h3>
     </div>
-    <table class="table-fill">
+    <table class="table-fill form">
         <thead>
             <tr>
                 <th class="text-left">Gift No</th>
                 <th class="text-left">Claims</th>
             </tr>
         </thead>
-        <tbody class="table-hover">
-            <% for(var i=0; i < length; i++) { %>
-            <tr>   
+        
+        <tbody class="table-hover"> 
+            <% for(var i=0; i < original_list.length; i++) { %>
+              <tr id="myImg" + <%= i%>>   
                 <td class="text-left"><%= i+1 %></td> 
-                <td class="text-left"><%= list[i] %></td>  
-            </tr><% } %>
+                <td class="text-left"><%= list[i] %></td> 
+              </tr><% } %>
         </tbody>
     </table>
+    <div id="myModal" class="modal">
+      <span class="close">&times;</span>
+      <img class="modal-content" id="img01">
+      <div id="caption"></div>
+    </div>
     <div class="bg1">
         <div class="centerer">
           <form action="/next_players" class="inline">
@@ -43,6 +60,43 @@
     </div> 
   </body>
 <!-- partial -->
-  
+
+
+<script>
+  // Get the modal
+    $(document).ready(function() {
+        $(document).on("click", "#form tbody tr", function() {
+          var id = $(this).closest('tr').attr('id');
+          alert("I am a " + id);
+          var modal = document.getElementById("myModal");
+          var img = document.getElementById(id);
+          console.log(img);
+          var modalImg = document.getElementById("img01");
+          var captionText = document.getElementById("caption");
+          modal.style.display = "block";
+          modal.style.width = "50%";
+          modal.style.maxHeight = "83%";
+          modal.style.left="10%";
+          modalImg.src = "mypic1.jpg";
+          captionText.innerHTML = img.getAttribute('value');
+          blurMe();
+          var span = document.getElementsByClassName("close")[0];
+          span.onclick = function() { 
+              modal.style.display = "none";
+              var element = document.getElementById("form");
+              element.classList.remove("blur");
+              }
+            });
+          });
+</script>
+<script>
+  function blurMe() {
+    var element = document.getElementById("form");
+    element.classList.add("blur");
+      /*setTimeout(function() {
+        element.classList.remove("blur");
+      }, 5000);*/
+  }
+</script>
 </body>
 </html>
