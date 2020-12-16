@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>CodePen - Custom input text field</title>
+  <link rel="stylesheet" href='/styles/start.css' />
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<div class="start">
+  <h3>Round <%= count %></h3>
+  <div>
+      <form action="/input" method="POST"
+        <h3><%= name %>, please enter a number</h3>
+        <div class="field-container">
+          <input class="field-input" id="inputid" name="giftNo" type="text" placeholder=" ">
+          <label class="field-placeholder" for="inputName">Gift No</label>
+        </div>
+        <button type="submit" class="button" >Next</button>
+      </form>
+  </div>
+</div>
+<table class="table-fill">
+  <thead>
+      <tr>
+          <th class="text-left">Gifts Available</th>
+      </tr>
+  </thead>
+  <tbody class="table-hover">
+      <% for(var i=0; i < available_gifts.length; i++) { %>
+      <tr>   
+          <td class="text-left"><%= available_gifts[i] %></td> 
+      </tr><% } %>
+  </tbody>
+</table>
+</body>
+</html>

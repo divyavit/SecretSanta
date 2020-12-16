@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+  <link rel="stylesheet" href='/styles/round.css' />
+
+</head>
+<body>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>Round <%= count-1 %> Results</title>
+	<meta name="viewport" content="initial-scale=1.0; maximum-scale=1.0; width=device-width;">
+</head>
+
+<body>
+    <div class="table-title">
+        <h3>Round <%= count-1 %> Results</h3>
+    </div>
+    <table class="table-fill">
+        <thead>
+            <tr>
+                <th class="text-left">Gift No</th>
+                <th class="text-left">Claims</th>
+            </tr>
+        </thead>
+        <tbody class="table-hover">
+            <% for(var i=0; i < length; i++) { %>
+            <tr>   
+                <td class="text-left"><%= i+1 %></td> 
+                <td class="text-left"><%= list[i] %></td>  
+            </tr><% } %>
+        </tbody>
+    </table>
+    <div class="bg1">
+        <div class="centerer">
+          <form action="/next_players" class="inline">
+            <button class="button" >Next</button>
+          </form>
+        </div>
+    </div> 
+  </body>
+<!-- partial -->
+  
+</body>
+</html>
