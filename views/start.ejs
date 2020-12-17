@@ -3,36 +3,41 @@
 <head>
   <meta charset="UTF-8">
   <title>CodePen - Custom input text field</title>
+  <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap" rel="stylesheet"><link rel="stylesheet" href="./style.css">
+  <link href='https://fonts.googleapis.com/css?family=Raleway:400,300,700' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href='/styles/start.css' />
-
 </head>
 <body>
 <!-- partial:index.partial.html -->
-<div class="start">
-  <h3>Round <%= count %></h3>
+<div class = "main_div">
+  <h3 class="round_no">Round <%= count %></h3>
   <div>
       <form action="/input" method="POST"
-        <h3><%= name %>, please enter a number</h3>
-        <div class="field-container">
-          <input class="field-input" id="inputid" name="giftNo" type="text" placeholder=" ">
-          <label class="field-placeholder" for="inputName">Gift No</label>
+        <h2 class="enter"><%= name %>, please enter a number</h2>
+        <div class="text__center">
+          <select class="cs-select cs-skin-elastic" name="giftNo" required>
+            <option value="" disabled selected>Select an option</option>
+            <% for(var i=0; i < available_gifts.length; i++) { %>
+              <option value="<%= available_gifts[i] %>">Gift <%= available_gifts[i] %></option> 
+            <% } %>
+          </select>
         </div>
         <button type="submit" class="button" >Next</button>
       </form>
   </div>
 </div>
-<table class="table-fill">
-  <thead>
-      <tr>
-          <th class="text-left">Gifts Available</th>
-      </tr>
-  </thead>
-  <tbody class="table-hover">
+<div class="card">
+  <div class="card__wrapper">
+    <div contenteditable="true" class="card__message">
+      Available gifts...<br>
       <% for(var i=0; i < available_gifts.length; i++) { %>
-      <tr>   
-          <td class="text-left"><%= available_gifts[i] %></td> 
-      </tr><% } %>
-  </tbody>
-</table>
+        Gift <%= available_gifts[i] %><br><% } %>
+    </div>
+  </div>
+</div>
+ 
+
+<script   src='/scripts/start.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
 </body>
 </html>

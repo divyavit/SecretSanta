@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>secret santa</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+<link rel="stylesheet" href='/styles/spin_wheel.css' />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<div class="list">
+  <h1 class="spinn"><%= name %>,its your turn please shuffle</h1>
+  <ul class="container delayedEntry">
+    <% for(var i=0; i < available_gifts.length; i++) { %>
+        <li><%= available_gifts[i] %></li>
+     <% } %>
+  </ul>
+</div>
+<div class="bg">
+    <div class="centerer">
+      <form action="/shuffledgifts" class="inline">
+        <button class="button" >Shuffle</button>
+    </form>
+    </div>
+</div>
+
+<div class="bg1">
+    <div class="centerer">
+      <form action="/lastround" class="inline">
+        <button class="button" >Next</button>
+      </form>
+    </div>
+</div> 
+
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+  <script  src='/scripts/list.js'></script>
+
+</body>
+</html>
