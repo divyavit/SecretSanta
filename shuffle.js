@@ -18,9 +18,11 @@ convert:function convertExcelToList() {
     const result = excelToJson({
         sourceFile: 'test.xlsx'
     });
-    for(let i = 0;i<result.Sheet1.length;i++) {
-        let doc = result.Sheet1[i];
+    //console.log(result);
+    for(let i = 0;i<result.Gift_links.length;i++) {
+        let doc = result.Gift_links[i];
         EmpNames.push(doc["A"]);
     }
+    console.log(EmpNames);
     return EmpNames;
-}};
+}}
