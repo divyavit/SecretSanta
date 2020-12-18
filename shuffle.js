@@ -25,6 +25,5 @@ convert:function convertExcelToList() {
             EmpNames.push(doc["A"]);
         }
     }
-    console.log(EmpNames);
     return EmpNames;
 }}

@@ -9,11 +9,13 @@
     position: fixed;
     top:20%;
     left:27%;
+    color:white;
   }
   .enter {
       position: fixed;
       top:37%;
       left:22%;
+      color:white;
     
   }
   .field-container {
@@ -632,7 +634,7 @@ div.cs-skin-elastic {
 .card {
   position: fixed;
   top:25%;
-  left:60%;
+  left:70%;
   width: 330px;
   height: 400px;
   background-color: #dbcfb4;
@@ -782,7 +784,7 @@ body {
 	text-align: center;
 	white-space: nowrap;
 	overflow: hidden;
-	position: absolute;
+	position:fixed;
 	z-index: 1;
 	margin: -15px 0 0 0;
 	padding: 0;

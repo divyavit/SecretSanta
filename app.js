@@ -39,7 +39,7 @@ app.get("/",function(req,res){
 app.get("/begin",function (req, res, next) { 
     original_list = tools.convert();
     //console.log(original_list);
-    console.log(original_list);
+   
     next_players = original_list;
     for(let i=1;i<=original_list.length;i++) {
         gifts.push(i);
@@ -78,7 +78,7 @@ app.get('/start', function (req, res, next) {
     //console.log("here get start");
     if(round_count > 5) {
         let name = next_players[people_count];
-        console.log(remaining_gifts);
+        
         res.render('spin_wheel',{count:round_count,name:name,available_gifts:remaining_gifts}); 
     }
     else {
@@ -100,7 +100,7 @@ app.get('/lastround', function (req, res, next) {
         remaining_gifts.splice(0, 1);
         people_count++;
         name = next_players[people_count];
-        console.log(remaining_gifts);
+    
         res.render('spin_wheel',{count:round_count,name:name,available_gifts:remaining_gifts}); 
     }
     else {
@@ -119,7 +119,6 @@ app.get('/lastround', function (req, res, next) {
             data["Claimed by"] = new_list[i-1];
             final.push(data);
         }
-        console.log(final);
         const wb = new xl.Workbook();
         const ws = wb.addWorksheet('Worksheet Name');
         const headingColumnNames = [
@@ -162,7 +161,7 @@ app.post('/input',urlencodedParser,jsonParser, function (req, res, next) {
         dict[req.body.giftNo].push(name);
         people_count++;
         let new_name = next_players[people_count];
-        console.log("dict is "+dict);
+  
         let value = "gift" + current_input;
         
         res.render('start',{value:value,count:round_count,name:new_name,available_gifts:gift_dict[new_name]});
@@ -172,7 +171,7 @@ app.post('/input',urlencodedParser,jsonParser, function (req, res, next) {
         current_input = req.body.gifNo;
         dict[req.body.giftNo] = dict[req.body.giftNo]|| [];
         dict[req.body.giftNo].push(name);
-        console.log(dict);
+       
         let new_list = [];
         if(round_count < 5)
         {
@@ -227,7 +226,6 @@ app.post('/input',urlencodedParser,jsonParser, function (req, res, next) {
                     data["Claimed by"] = newly_list[i-1];
                     final.push(data);
                 }
-                console.log(final);
                 const wb = new xl.Workbook();
                 const ws = wb.addWorksheet('Worksheet Name');
                 const headingColumnNames = [
@@ -268,7 +266,7 @@ app.post('/input',urlencodedParser,jsonParser, function (req, res, next) {
                     final_players = final_players.concat(res);
                 }
             }
-            console.log("gifts ",remaining_gifts);
+            
             next_players = final_players;
             if(c==0) {
                 let final = [];
@@ -282,7 +280,6 @@ app.post('/input',urlencodedParser,jsonParser, function (req, res, next) {
                     data["Claimed by"] = newly_list[i-1];
                     final.push(data);
                 }
-                console.log(final);
                 const wb = new xl.Workbook();
                 const ws = wb.addWorksheet('Worksheet Name');
                 const headingColumnNames = [
