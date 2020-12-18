@@ -21,7 +21,9 @@ convert:function convertExcelToList() {
     //console.log(result);
     for(let i = 0;i<result.Gift_links.length;i++) {
         let doc = result.Gift_links[i];
-        EmpNames.push(doc["A"]);
+        if(doc["A"] != undefined){
+            EmpNames.push(doc["A"]);
+        }
     }
     console.log(EmpNames);
     return EmpNames;

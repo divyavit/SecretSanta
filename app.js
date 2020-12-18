@@ -2,6 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const app = express();
+let xl = require('excel4node');
 let tools = require('./shuffle');
 let fs = require('fs');
 var bodyParser = require('body-parser');
@@ -12,6 +13,7 @@ let dict = {};
 let remaining_gifts = [];
 let gift_dict = {};
 let next_players = [];
+let current_input = "";
 //dict.clear();
 let gifts = [];
 var jsonParser = bodyParser.json();
@@ -37,6 +39,7 @@ app.get("/",function(req,res){
 app.get("/begin",function (req, res, next) { 
     original_list = tools.convert();
     //console.log(original_list);
+    console.log(original_list);
     next_players = original_list;
     for(let i=1;i<=original_list.length;i++) {
         gifts.push(i);
@@ -53,6 +56,12 @@ app.get('/list', function (req, res, next) {
     //console.log("here list");
     
     res.render('list',{list:next_players,count:round_count}); 
+});
+app.get('/show', function (req, res, next) { 
+    //console.log("here list");
+    let value = "gift" + current_input;
+    let name = next_players[people_count];
+    res.render('start',{list:next_players,count:round_count,value:value,count:round_count,name:name,available_gifts:gift_dict[name]}); 
 });
 app.get('/shuffled', function (req, res, next) { 
     //console.log("here shuffled");
@@ -75,7 +84,8 @@ app.get('/start', function (req, res, next) {
     else {
         let name = next_players[people_count];
         //console.log("gift dict for player " + name + " is "+ gift_dict[name]);
-        res.render('start',{count:round_count,name:name,available_gifts:gift_dict[name]}); 
+        let value="gift"+current_input;
+        res.render('start',{count:round_count,name:name,available_gifts:gift_dict[name],value:value}); 
     }
 });
 app.get('/next_players', function (req, res, next) { 
@@ -95,16 +105,43 @@ app.get('/lastround', function (req, res, next) {
     }
     else {
         let new_list = [];
+        let final = [];
         dict[remaining_gifts[0]] = dict[remaining_gifts[0]] || [];
         let name = next_players[people_count];
         dict[remaining_gifts[0]].push(name);
         remaining_gifts.splice(0, 1);
         people_count = 0;
         for(let i=1;i<=original_list.length;i++) {
+            let data = {};
             let res = dict[i.toString()] || [];
             new_list.push(res.join());
+            data["GiftNo"] = "Gift" + i.toString();
+            data["Claimed by"] = new_list[i-1];
+            final.push(data);
         }
-        res.render('result',{count:round_count,list:new_list,original_list}); 
+        console.log(final);
+        const wb = new xl.Workbook();
+        const ws = wb.addWorksheet('Worksheet Name');
+        const headingColumnNames = [
+            "Gift No",
+            "Claimed By",
+        ]
+        let headingColumnIndex = 1;
+        headingColumnNames.forEach(heading => {
+            ws.cell(1, headingColumnIndex++)
+                .string(heading)
+        });
+        let rowIndex = 2;
+        final.forEach( record => {
+            let columnIndex = 1;
+            Object.keys(record ).forEach(columnName =>{
+                ws.cell(rowIndex,columnIndex++)
+                    .string(record [columnName])
+            });
+            rowIndex++;
+        });
+        wb.write('./styles/filename.xlsx');
+        res.render('final',{count:round_count,list:new_list,original_list}); 
     }
 });
 app.post('/input',urlencodedParser,jsonParser, function (req, res, next) { 
@@ -112,6 +149,7 @@ app.post('/input',urlencodedParser,jsonParser, function (req, res, next) {
     if(people_count<next_players.length-1) {
         //console.log(req.body.giftNo);
         //console.log("new players for current round "+ next_players);
+        current_input = req.body.gifNo;
         let name = next_players[people_count];
         dict[req.body.giftNo] = dict[req.body.giftNo]|| [];
         let g = gift_dict[name].indexOf(parseInt(req.body.giftNo));
@@ -125,11 +163,13 @@ app.post('/input',urlencodedParser,jsonParser, function (req, res, next) {
         people_count++;
         let new_name = next_players[people_count];
         console.log("dict is "+dict);
-        //console.log("gift dict for player " + new_name + " is "+ gift_dict[new_name]);
-        res.render('start',{count:round_count,name:new_name,available_gifts:gift_dict[new_name]});
+        let value = "gift" + current_input;
+        
+        res.render('start',{value:value,count:round_count,name:new_name,available_gifts:gift_dict[new_name]});
     }
     else {
         let name = next_players[people_count];
+        current_input = req.body.gifNo;
         dict[req.body.giftNo] = dict[req.body.giftNo]|| [];
         dict[req.body.giftNo].push(name);
         console.log(dict);
@@ -150,24 +190,68 @@ app.post('/input',urlencodedParser,jsonParser, function (req, res, next) {
                 new_list.push(res.join());
             }
             let new_players = [];
+            let d = 0;
             for(let i=1;i<=original_list.length;i++) {
                 let res = dict[i.toString()] || [];
                 //console.log("res is"+ res);
                 if(res.length > 1) {
+                    d++;
                     let some = res.slice(0,res.length-1);
                     //console.log("some is ",some);
                     new_players = new_players.concat(some);
                 }
                 //console.log(new_players);
             }
-            for(let i=1;i<=original_list.length;i++) {
-                let res = dict[i.toString()] || [];
-                if(res.length > 1) {
-                    res.splice(0,res.length-1);
-                    dict[i.toString()] = res;
+            if(d>0){
+                for(let i=1;i<=original_list.length;i++) {
+                    let res = dict[i.toString()] || [];
+                    if(res.length > 1) {
+                        res.splice(0,res.length-1);
+                        dict[i.toString()] = res;
+                    }
                 }
+                next_players = new_players;
+                round_count++;
+                people_count = 0;
+                res.render('result',{count:round_count,list:new_list,original_list}); 
             }
-            next_players = new_players;
+            else {
+                let final = [];
+                people_count = 0;
+                let newly_list = [];
+                for(let i=1;i<=original_list.length;i++) {
+                    let data = {};
+                    let res = dict[i.toString()] || [];
+                    newly_list.push(res.join());
+                    data["GiftNo"] = "Gift" + i.toString();
+                    data["Claimed by"] = newly_list[i-1];
+                    final.push(data);
+                }
+                console.log(final);
+                const wb = new xl.Workbook();
+                const ws = wb.addWorksheet('Worksheet Name');
+                const headingColumnNames = [
+                    "Gift No",
+                    "Claimed By",
+                ]
+                let headingColumnIndex = 1;
+                headingColumnNames.forEach(heading => {
+                    ws.cell(1, headingColumnIndex++)
+                        .string(heading)
+                });
+                let rowIndex = 2;
+                final.forEach( record => {
+                    let columnIndex = 1;
+                    Object.keys(record ).forEach(columnName =>{
+                        ws.cell(rowIndex,columnIndex++)
+                            .string(record [columnName])
+                    });
+                    rowIndex++;
+                });
+                wb.write('./styles/filename.xlsx');
+                res.render('final',{count:round_count,list:new_list,original_list}); 
+
+            }
         }
         else if(round_count >= 5) {
             let final_players = [];
@@ -180,25 +264,61 @@ app.post('/input',urlencodedParser,jsonParser, function (req, res, next) {
                 let res = dict[i.toString()] || [];
                 //console.log("res is"+ res);
                 if(res.length > 1) {
-                    //console.log("some is ",some);
                     c++;
                     final_players = final_players.concat(res);
-                }
-                //console.log(final_players);
-            }
-            for(let i=1;i<=original_list.length;i++) {
-                let res = dict[i.toString()] || [];
-                if(res.length !=1) {
-                    remaining_gifts.push(i);
-                    dict[i.toString()] = [];
                 }
             }
             console.log("gifts ",remaining_gifts);
             next_players = final_players;
+            if(c==0) {
+                let final = [];
+                people_count = 0;
+                let newly_list = [];
+                for(let i=1;i<=original_list.length;i++) {
+                    let data = {};
+                    let res = dict[i.toString()] || [];
+                    newly_list.push(res.join());
+                    data["GiftNo"] = "Gift" + i.toString();
+                    data["Claimed by"] = newly_list[i-1];
+                    final.push(data);
+                }
+                console.log(final);
+                const wb = new xl.Workbook();
+                const ws = wb.addWorksheet('Worksheet Name');
+                const headingColumnNames = [
+                    "Gift No",
+                    "Claimed By",
+                ]
+                let headingColumnIndex = 1;
+                headingColumnNames.forEach(heading => {
+                    ws.cell(1, headingColumnIndex++)
+                        .string(heading)
+                });
+                let rowIndex = 2;
+                final.forEach( record => {
+                    let columnIndex = 1;
+                    Object.keys(record ).forEach(columnName =>{
+                        ws.cell(rowIndex,columnIndex++)
+                            .string(record [columnName])
+                    });
+                    rowIndex++;
+                });
+                wb.write('./styles/filename.xlsx');
+                res.render('final',{count:round_count,list:new_list,original_list}); 
+            } 
+            else {
+                for(let i=1;i<=original_list.length;i++) {
+                    let res = dict[i.toString()] || [];
+                    if(res.length !=1) {
+                        remaining_gifts.push(i);
+                        dict[i.toString()] = [];
+                    }
+                }
+                round_count++;
+                people_count = 0;
+                res.render('result',{count:round_count,list:new_list,original_list}); 
+            }
         }
-        round_count++;
-        people_count = 0;
-        res.render('result',{count:round_count,list:new_list,original_list}); 
     }
      
 });

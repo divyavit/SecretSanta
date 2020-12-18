@@ -1,5 +1,5 @@
 //courtesy to the super coder I can't recall
-! function(e) {
+/*! function(e) {
   "use strict";
 
   function t(e) {
@@ -133,4 +133,4 @@ function() {
   [].slice.call(document.querySelectorAll("select.cs-select")).forEach(function(e) {
     new SelectFx(e)
   })
-}();
+}();*/

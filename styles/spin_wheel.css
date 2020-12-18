@@ -1,6 +1,8 @@
 @import url(https://fonts.googleapis.com/css?family=Open+Sans:300);
 .spinn {
-  left:5%;
+  left:9%;
+  top:21%;
+  position: fixed;
 }
 @keyframes delayedEntry {
   0% {

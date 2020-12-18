@@ -2,8 +2,10 @@
 <html lang="en" >
 <head>
   <meta charset="UTF-8">
-  <title>CodePen - Custom input text field</title>
-  <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap" rel="stylesheet"><link rel="stylesheet" href="./style.css">
+  <title>Secret Santa</title>
+  <script src='jquery-3.2.1.min.js'></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap" rel="stylesheet">
   <link href='https://fonts.googleapis.com/css?family=Raleway:400,300,700' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href='/styles/start.css' />
 </head>
@@ -12,17 +14,18 @@
 <div class = "main_div">
   <h3 class="round_no">Round <%= count %></h3>
   <div>
-      <form action="/input" method="POST"
+      <form action="/input" method="POST">
         <h2 class="enter"><%= name %>, please enter a number</h2>
-        <div class="text__center">
-          <select class="cs-select cs-skin-elastic" name="giftNo" required>
+        <div id="y" class="text__center">
+          <select id="gifts" class="check" name="giftNo" onfocus='this.size=5;' onblur='this.size=5;' onchange='this.size=5; this.blur();' required>
             <option value="" disabled selected>Select an option</option>
             <% for(var i=0; i < available_gifts.length; i++) { %>
-              <option value="<%= available_gifts[i] %>">Gift <%= available_gifts[i] %></option> 
+              <option id="gift<%= i+1 %>" value="<%= available_gifts[i] %>">Gift <%= available_gifts[i] %></option> 
             <% } %>
           </select>
         </div>
         <button type="submit" class="button" >Next</button>
+        
       </form>
   </div>
 </div>
@@ -35,6 +38,52 @@
     </div>
   </div>
 </div>
+
+<div id="myModal" class="modal">
+  <span class="close">&times;</span>
+  <img class="modal-content" id="img01">
+  <div id="caption"></div>
+</div>
+
+<script>
+  // Get the modal
+  $(document).ready(function($) {
+    $('.check').change(function(){
+          console.log("here");
+          var data= $(this).val();
+          //alert(data);
+          var id = "gift"+data;
+          console.log("id is "+ id);
+          $('.modal').click(function (event) 
+            {
+              console.log("body");
+            if(!$(event.target).closest('#'+id).length && !$(event.target).is('#'+id)) {
+                $(".modal").hide();
+                console.log("hide");
+              }     
+            });
+          var modal = document.getElementById("myModal");
+          var img = document.getElementById(id);
+          console.log(id);
+          var modalImg = document.getElementById("img01");
+          var captionText = document.getElementById("caption");
+          modal.style.display = "block";
+          modal.style.width = "95%";
+          modal.style.maxHeight = "100%";
+          modal.style.left="8%";
+          modalImg.src = "/styles/"+id+".jpg";
+          captionText.innerHTML = "gift";
+          var span = document.getElementsByClassName("close")[0];
+          span.onclick = function() { 
+              modal.style.display = "none"; 
+              console.log("span");
+              }
+            });
+      });
+</script>
+<script>
+</script>
+
  
 
 <script   src='/scripts/start.js'></script>

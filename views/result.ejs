@@ -48,7 +48,9 @@
   // Get the modal
     $(document).ready(function() {
         $(document).on("click", "#gifts tbody tr", function() {
+          console.log("here");
           var id = $(this).closest('tr').attr('id');
+          console.log(id);
           $('body').click(function (event) 
             {
             if(!$(event.target).closest('#'+id).length && !$(event.target).is('#'+id)) {

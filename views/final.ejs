@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+  <link rel="stylesheet" href='/styles/round.css' />
+  <title>Final Results</title>
+  <script src='jquery-3.2.1.min.js'></script>
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<meta name="viewport" content="initial-scale=1.0; maximum-scale=1.0; width=device-width;">
+
+</head>
+
+<body>
+    <div class="table-title">
+        <h3>Final Results</h3>
+    </div>
+    <table class="table-fill" id="gifts">
+        <thead>
+            <tr>
+                <th class="text-left">Gift No</th>
+                <th class="text-left">Claims</th>
+            </tr>
+        </thead>
+        
+        <tbody class="table-hover"> 
+            <% for(var i=0; i < original_list.length; i++) { %>
+              <tr id="gift<%= i+1 %>">   
+                <td class="text-left"><%= i+1 %></td> 
+                <td class="text-left"><%= list[i] %></td> 
+              </tr><% } %>
+        </tbody>
+    </table>
+    <div id="myModal" class="modal">
+      <span class="close">&times;</span>
+      <img class="modal-content" id="img01">
+      <div id="caption"></div>
+    </div>
+    <div>
+    <a style="top:92%;position:fixed;left:2%;color:red" href="/styles/filename.xlsx" download><i class="fa fa-download fa-2x" aria-hidden="true"></i></a>
+    </div>
+<script>
+  // Get the modal
+    $(document).ready(function() {
+        $(document).on("click", "#gifts tbody tr", function() {
+          console.log("here");
+          var id = $(this).closest('tr').attr('id');
+          console.log(id);
+          $('body').click(function (event) 
+            {
+            if(!$(event.target).closest('#'+id).length && !$(event.target).is('#'+id)) {
+                $(".modal").hide();
+                var element = document.getElementById("gifts");
+                element.classList.remove("blur");
+              }     
+            });
+          var modal = document.getElementById("myModal");
+          var img = document.getElementById(id);
+          console.log(id);
+          var modalImg = document.getElementById("img01");
+          var captionText = document.getElementById("caption");
+          modal.style.display = "block";
+          modal.style.width = "95%";
+          modal.style.maxHeight = "100%";
+          modal.style.left="8%";
+          modalImg.src = "/styles/"+id+".jpg";
+          captionText.innerHTML = img.getAttribute('value');
+          blurMe();
+          var span = document.getElementsByClassName("close")[0];
+          span.onclick = function() { 
+              modal.style.display = "none";
+              var element = document.getElementById("form");
+              element.classList.remove("blur");
+              }
+            });
+          });
+</script>
+<script>
+  function blurMe() {
+    var element = document.getElementById("form");
+    element.classList.add("blur");
+      /*setTimeout(function() {
+        element.classList.remove("blur");
+      }, 5000);*/
+  }
+</script>
+</body>
+</html>
